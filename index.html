@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    /* General Body Styling */
     body {
       display: flex;
       flex-direction: column;
@@ -15,69 +16,106 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      background-color: #f0f9ff;
-      font-family: 'Bebas Neue', Arial, sans-serif;
+      background-color: #f7f9fc; /* Soft white for a clean, modern background */
+      font-family: 'Open Sans', Arial, sans-serif; /* Professional sans-serif font */
     }
+
+    /* Timer Container */
     .timer-container {
       text-align: center;
+      color: #2c3e50; /* Navy blue for text */
     }
+
+    /* Phase Title */
     .phase {
       font-size: 2rem;
       margin-bottom: 20px;
+      font-weight: 600;
     }
+
+    /* Countdown Timer */
     .countdown {
-      font-size: 5rem;
+      font-size: 4.5rem;
+      font-weight: 600;
+      margin: 10px 0;
     }
+
+    /* Total Duration Display */
     .total-duration {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       margin-bottom: 20px;
+      color: #34495e; /* Slightly darker navy blue for secondary text */
     }
+
+    /* Breathing Circle */
     .circle {
       position: relative;
       width: 200px;
       height: 200px;
       margin: 0 auto 20px;
       border-radius: 50%;
-      background-color: lightblue;
+      background-color: #2c3e50; /* Navy blue background for the circle */
       transform: scale(1);
       transition: transform 1s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     }
+
+    /* Circle States */
     .circle.inhale {
-      transform: scale(1.12); /* Reduce max size by 20% from 1.4 (20% of 1.4 = 1.12) */
+      transform: scale(1.12); /* Reduce max size by 20% */
+      background-color: #34495e; /* Slightly lighter navy blue for inhale */
     }
     .circle.hold-expanded {
       transform: scale(1.12);
+      background-color: #2c3e50;
     }
     .circle.exhale {
       transform: scale(0.8); /* Contract during exhale */
+      background-color: #7f8c8d; /* Neutral gray tone for exhale */
     }
     .circle.hold-contracted {
       transform: scale(0.8);
+      background-color: #2c3e50; /* Return to navy blue during hold */
     }
+
+    /* Control Buttons */
     .controls button {
       padding: 10px 20px;
       margin: 0 10px;
       font-size: 1rem;
+      font-family: 'Open Sans', Arial, sans-serif;
+      font-weight: 600;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      font-family: 'Bebas Neue', Arial, sans-serif;
+      transition: background-color 0.3s ease;
     }
+
+    /* Start Button */
     .start-button {
-      background-color: #48bb78;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
+      background-color: #1abc9c; /* Soft green for positive action */
+      color: #ffffff;
     }
+    .start-button:hover {
+      background-color: #16a085;
+    }
+
+    /* Pause/Resume Button */
     .pause-button, .resume-button {
-      background-color: #ed8936;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
+      background-color: #f39c12; /* Warm orange for pause/resume */
+      color: #ffffff;
     }
+    .pause-button:hover, .resume-button:hover {
+      background-color: #e67e22;
+    }
+
+    /* Reset Button */
     .reset-button {
-      background-color: #e53e3e;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
+      background-color: #e74c3c; /* Red for reset */
+      color: #ffffff;
+    }
+    .reset-button:hover {
+      background-color: #c0392b;
     }
   </style>
 </head>
