@@ -60,24 +60,6 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     }
 
-    /* Circle States */
-    .circle.inhale {
-      transform: scale(1.12); /* Reduce max size by 20% */
-      background-color: #34495e; /* Slightly lighter navy blue for inhale */
-    }
-    .circle.hold-expanded {
-      transform: scale(1.12);
-      background-color: #2c3e50;
-    }
-    .circle.exhale {
-      transform: scale(0.8); /* Contract during exhale */
-      background-color: #7f8c8d; /* Neutral gray tone for exhale */
-    }
-    .circle.hold-contracted {
-      transform: scale(0.8);
-      background-color: #2c3e50; /* Return to navy blue during hold */
-    }
-
     /* Control Buttons */
     .controls button {
       padding: 10px 20px;
@@ -134,7 +116,6 @@
   </div>
 
   <script>
-    // Pre-set durations in seconds
     const durations = {
       inhale: 4,
       hold1: 4,
@@ -177,8 +158,23 @@
       }
     }
 
-    function updateCircleTransitionDuration(duration) {
-      circle.style.transition = `transform ${duration}s ease-in-out`;
+    function startCountdown(callback) {
+      let countdown = 3;
+      const countdownSound = 'https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/juLIYuEYre10CvC03A1h/pub/Uv3HohLT6QXTqYK3Ro4e.mp3';
+      playSound(countdownSound);
+
+      const countdownInterval = setInterval(() => {
+        if (countdown > 0) {
+          phaseDisplay.textContent = `Starting in ${countdown}`;
+          countdownDisplay.textContent = countdown;
+          countdown--;
+        } else {
+          clearInterval(countdownInterval);
+          phaseDisplay.textContent = 'Begin!';
+          countdownDisplay.textContent = '';
+          callback(); // Start the timer after countdown
+        }
+      }, 1000);
     }
 
     function updateDisplay() {
@@ -193,9 +189,6 @@
         countdownDisplay.textContent = timeLeft;
         totalDurationDisplay.textContent = 'Total Time: ' + formatTime(totalTimeElapsed);
         circle.className = `circle ${currentPhase.class}`;
-
-        // Update the circle's transition duration dynamically
-        updateCircleTransitionDuration(currentPhase.duration);
       }
     }
 
@@ -223,16 +216,14 @@
       }, 1000);
     }
 
-    function pauseTimer() {
-      if (!isRunning) return;
+    startButton.addEventListener('click', () => startCountdown(startTimer));
+    pauseButton.addEventListener('click', () => {
       isRunning = false;
       clearInterval(timerInterval);
       pauseButton.style.display = 'none';
       resumeButton.style.display = 'inline-block';
-    }
-
-    function resumeTimer() {
-      if (isRunning) return;
+    });
+    resumeButton.addEventListener('click', () => {
       isRunning = true;
       pauseButton.style.display = 'inline-block';
       resumeButton.style.display = 'none';
@@ -242,9 +233,8 @@
         if (timeLeft <= 0) nextPhase();
         updateDisplay();
       }, 1000);
-    }
-
-    function resetTimer() {
+    });
+    resetButton.addEventListener('click', () => {
       clearInterval(timerInterval);
       isRunning = false;
       phaseIndex = -1;
@@ -255,12 +245,7 @@
       pauseButton.style.display = 'none';
       resumeButton.style.display = 'none';
       resetButton.style.display = 'none';
-    }
-
-    startButton.addEventListener('click', startTimer);
-    pauseButton.addEventListener('click', pauseTimer);
-    resumeButton.addEventListener('click', resumeTimer);
-    resetButton.addEventListener('click', resetTimer);
+    });
 
     updateDisplay();
   </script>
