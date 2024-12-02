@@ -6,9 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* General Body Styling */
     body {
       display: flex;
       flex-direction: column;
@@ -16,51 +15,61 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      background-color: #f7f9fc; /* Soft white for a clean, modern background */
-      font-family: 'Open Sans', Arial, sans-serif; /* Professional sans-serif font */
+      background-color: #f7f9fc;
+      font-family: 'Open Sans', Arial, sans-serif;
     }
 
-    /* Timer Container */
     .timer-container {
       text-align: center;
-      color: #2c3e50; /* Navy blue for text */
+      color: #2c3e50;
     }
 
-    /* Phase Title */
     .phase {
       font-size: 2rem;
       margin-bottom: 20px;
       font-weight: 600;
     }
 
-    /* Countdown Timer */
     .countdown {
       font-size: 4.5rem;
       font-weight: 600;
       margin: 10px 0;
     }
 
-    /* Total Duration Display */
     .total-duration {
       font-size: 1.25rem;
       margin-bottom: 20px;
-      color: #34495e; /* Slightly darker navy blue for secondary text */
+      color: #34495e;
     }
 
-    /* Breathing Circle */
     .circle {
       position: relative;
       width: 200px;
       height: 200px;
       margin: 0 auto 20px;
       border-radius: 50%;
-      background-color: #2c3e50; /* Navy blue background for the circle */
-      transform: scale(1);
+      background-color: #2c3e50;
+      transform: scale(0.8); /* Pre-inhale size */
       transition: transform 1s ease-in-out;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* Control Buttons */
+    .circle.inhale {
+      transform: scale(1.12);
+    }
+
+    .circle.hold-expanded {
+      transform: scale(1.12);
+    }
+
+    .circle.exhale {
+      transform: scale(0.8);
+    }
+
+    .circle.hold-contracted {
+      transform: scale(0.8);
+    }
+
     .controls button {
       padding: 10px 20px;
       margin: 0 10px;
@@ -73,29 +82,29 @@
       transition: background-color 0.3s ease;
     }
 
-    /* Start Button */
     .start-button {
-      background-color: #1abc9c; /* Soft green for positive action */
+      background-color: #1abc9c;
       color: #ffffff;
     }
+
     .start-button:hover {
       background-color: #16a085;
     }
 
-    /* Pause/Resume Button */
     .pause-button, .resume-button {
-      background-color: #f39c12; /* Warm orange for pause/resume */
+      background-color: #f39c12;
       color: #ffffff;
     }
+
     .pause-button:hover, .resume-button:hover {
       background-color: #e67e22;
     }
 
-    /* Reset Button */
     .reset-button {
-      background-color: #e74c3c; /* Red for reset */
+      background-color: #e74c3c;
       color: #ffffff;
     }
+
     .reset-button:hover {
       background-color: #c0392b;
     }
@@ -103,9 +112,8 @@
 </head>
 <body>
   <div class="timer-container">
-    <div class="phase" id="phase-display">Get Ready</div>
+    <div class="phase" id="phase-display">Starting in 3</div>
     <div class="circle" id="circle"></div>
-    <div class="countdown" id="countdown-display"></div>
     <div class="total-duration" id="total-duration-display">Total Time: 0:00</div>
     <div class="controls">
       <button class="start-button" id="start-button">Start</button>
@@ -116,18 +124,12 @@
   </div>
 
   <script>
-    const durations = {
-      inhale: 4,
-      hold1: 4,
-      exhale: 4,
-      hold2: 4
-    };
-
+    const durations = { inhale: 4, hold1: 4, exhale: 4, hold2: 4 };
     const phases = [
-      { name: 'Inhale', duration: durations.inhale, class: 'inhale', sound: 'https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/juLIYuEYre10CvC03A1h/pub/J8mip7lBT6vgAWHXPxTQ.mp3' },
-      { name: 'Hold', duration: durations.hold1, class: 'hold-expanded', sound: 'https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/juLIYuEYre10CvC03A1h/pub/zLQqzZ0tp1deFSwzivtb.mp3' },
-      { name: 'Exhale', duration: durations.exhale, class: 'exhale', sound: 'https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/juLIYuEYre10CvC03A1h/pub/uJ4wEJfrddhk0AfgjR3x.mp3' },
-      { name: 'Hold', duration: durations.hold2, class: 'hold-contracted', sound: 'https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/juLIYuEYre10CvC03A1h/pub/zLQqzZ0tp1deFSwzivtb.mp3' }
+      { name: 'Inhale', duration: durations.inhale, class: 'inhale' },
+      { name: 'Hold', duration: durations.hold1, class: 'hold-expanded' },
+      { name: 'Exhale', duration: durations.exhale, class: 'exhale' },
+      { name: 'Hold', duration: durations.hold2, class: 'hold-contracted' },
     ];
 
     let phaseIndex = -1;
@@ -137,116 +139,62 @@
     let totalTimeElapsed = 0;
 
     const phaseDisplay = document.getElementById('phase-display');
-    const countdownDisplay = document.getElementById('countdown-display');
-    const totalDurationDisplay = document.getElementById('total-duration-display');
     const circle = document.getElementById('circle');
     const startButton = document.getElementById('start-button');
     const pauseButton = document.getElementById('pause-button');
     const resumeButton = document.getElementById('resume-button');
     const resetButton = document.getElementById('reset-button');
 
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins}:${String(secs).padStart(2, '0')}`;
-    }
-
-    function playSound(sound) {
-      if (sound) {
-        const audio = new Audio(sound);
-        audio.play();
-      }
-    }
-
-    function startCountdown(callback) {
-      let countdown = 3;
-      const countdownSound = 'https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/juLIYuEYre10CvC03A1h/pub/Uv3HohLT6QXTqYK3Ro4e.mp3';
-      playSound(countdownSound);
-
-      const countdownInterval = setInterval(() => {
-        if (countdown > 0) {
-          phaseDisplay.textContent = `Starting in ${countdown}`;
-          countdownDisplay.textContent = countdown;
-          countdown--;
-        } else {
-          clearInterval(countdownInterval);
-          phaseDisplay.textContent = 'Begin!';
-          countdownDisplay.textContent = '';
-          callback(); // Start the timer after countdown
-        }
-      }, 1000);
-    }
-
     function updateDisplay() {
       if (phaseIndex === -1) {
-        phaseDisplay.textContent = 'Get Ready';
-        countdownDisplay.textContent = '';
-        totalDurationDisplay.textContent = 'Total Time: 0:00';
+        phaseDisplay.textContent = 'Starting in 3';
         circle.className = 'circle';
       } else {
         const currentPhase = phases[phaseIndex];
         phaseDisplay.textContent = currentPhase.name;
-        countdownDisplay.textContent = timeLeft;
-        totalDurationDisplay.textContent = 'Total Time: ' + formatTime(totalTimeElapsed);
         circle.className = `circle ${currentPhase.class}`;
       }
     }
 
+    function countdownStart(callback) {
+      let countdown = 3;
+      const countdownAudio = new Audio('https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/juLIYuEYre10CvC03A1h/pub/Uv3HohLT6QXTqYK3Ro4e.mp3');
+      countdownAudio.play();
+
+      const countdownInterval = setInterval(() => {
+        phaseDisplay.textContent = `Starting in ${countdown}`;
+        countdown--;
+
+        if (countdown < 0) {
+          clearInterval(countdownInterval);
+          callback();
+        }
+      }, 1000);
+    }
+
     function nextPhase() {
-      phaseIndex++;
-      if (phaseIndex >= phases.length) phaseIndex = 0;
-      const currentPhase = phases[phaseIndex];
-      timeLeft = currentPhase.duration;
-      playSound(currentPhase.sound);
+      phaseIndex = (phaseIndex + 1) % phases.length;
+      timeLeft = phases[phaseIndex].duration;
       updateDisplay();
     }
 
     function startTimer() {
       if (isRunning) return;
+
       isRunning = true;
-      if (phaseIndex === -1) nextPhase();
+      if (phaseIndex === -1) countdownStart(() => nextPhase());
+      else nextPhase();
+
       startButton.style.display = 'none';
       pauseButton.style.display = 'inline-block';
-      resetButton.style.display = 'inline-block';
+
       timerInterval = setInterval(() => {
         timeLeft--;
-        totalTimeElapsed++;
         if (timeLeft <= 0) nextPhase();
-        updateDisplay();
       }, 1000);
     }
 
-    startButton.addEventListener('click', () => startCountdown(startTimer));
-    pauseButton.addEventListener('click', () => {
-      isRunning = false;
-      clearInterval(timerInterval);
-      pauseButton.style.display = 'none';
-      resumeButton.style.display = 'inline-block';
-    });
-    resumeButton.addEventListener('click', () => {
-      isRunning = true;
-      pauseButton.style.display = 'inline-block';
-      resumeButton.style.display = 'none';
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        totalTimeElapsed++;
-        if (timeLeft <= 0) nextPhase();
-        updateDisplay();
-      }, 1000);
-    });
-    resetButton.addEventListener('click', () => {
-      clearInterval(timerInterval);
-      isRunning = false;
-      phaseIndex = -1;
-      timeLeft = 0;
-      totalTimeElapsed = 0;
-      updateDisplay();
-      startButton.style.display = 'inline-block';
-      pauseButton.style.display = 'none';
-      resumeButton.style.display = 'none';
-      resetButton.style.display = 'none';
-    });
-
+    startButton.addEventListener('click', startTimer);
     updateDisplay();
   </script>
 </body>
