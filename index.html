@@ -217,7 +217,9 @@
       phaseIndex = (phaseIndex + 1) % phases.length;
       const currentPhase = phases[phaseIndex];
       timeLeft = currentPhase.duration;
-      playSound(currentPhase.sound);
+      if (!(phaseIndex === 0 && totalTimeElapsed === 0)) { // Ensure sound plays for the first inhale
+        playSound(currentPhase.sound);
+      }
       updateDisplay();
     }
 
@@ -233,6 +235,7 @@
         countdownStart(() => {
           phaseIndex = 0;
           timeLeft = phases[phaseIndex].duration;
+          playSound(phases[phaseIndex].sound); // Play sound for the first inhale
           updateDisplay();
           startBreathingTimer();
         });
